@@ -25,7 +25,7 @@ restartButton.addEventListener("click", function() {
 
 function showLoadingScreen() {
     lockpickButton.style.display = "none";
-    loadingScreen.style.display = "block";
+    loadingScreen.style.display = "block"; 
     
     let countdown = 3;
     countdownElement.textContent = countdown;
@@ -36,8 +36,8 @@ function showLoadingScreen() {
             countdownElement.textContent = countdown;
         } else {
             clearInterval(countdownInterval);
-            loadingScreen.style.display = "none";
-            startGame();
+            loadingScreen.style.display = "none"; 
+            startGame(); 
         }
     }, 1000);
 }
@@ -48,14 +48,13 @@ function startGame() {
     resultMessage.style.display = "none"; 
     forklaring.style.display = "block"; 
     
-    targetKeys = Array.from({length: 3}, () => Math.floor(Math.random() * 10));
+    targetKeys = Array.from({length: 5}, () => Math.floor(Math.random() * 10));
     
     targetSquares.forEach((square, index) => {
         square.textContent = targetKeys[index];
     });
 
     targetPositions = Array.from(targetSquares).map(square => square.offsetLeft);
-    console.log(`Target positions: ${targetPositions}`);
 
     movingPosition = 0;
     currentTargetIndex = 0;
@@ -69,7 +68,7 @@ function moveSquare() {
     movingPosition += 2;
     movingSquare.style.left = movingPosition + "px";
     
-    if (movingPosition >= 300) { 
+    if (movingPosition >= 390) { 
         clearInterval(moveInterval);
         checkForLoss();
     }
@@ -102,7 +101,7 @@ function checkWinCondition() {
         targetSquares[currentTargetIndex].classList.add('hit');
         currentTargetIndex++;
 
-        if (successfulHits === 3) {
+        if (successfulHits === 5) {
             displayMessage("Du Vant!", "green");
             forklaring.style.display = "none";  
             restartButton.style.display = "block";
@@ -117,7 +116,7 @@ function checkWinCondition() {
 }
 
 function checkForLoss() {
-    if (successfulHits < 3) {
+    if (successfulHits < 5) {
         displayMessage("Du Tapte!", "red");
         forklaring.style.display = "none";  
         restartButton.style.display = "block";

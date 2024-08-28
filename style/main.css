@@ -10,8 +10,8 @@ main {
 }
 
 .container {
-    height: 50vh;
-    width: 50vh;
+    width: 50%;
+    height: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +22,7 @@ main {
     border: 1px solid #13aa52;
     border-radius: 4px;
     height: 10%;
-    width: 30%;
+    width: 20%;
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
     box-sizing: border-box;
@@ -63,7 +63,7 @@ main {
 
 .progress-bar {
     position: relative;
-    width: 300px;
+    width: 400px;
     height: 30px;
     border: 1px solid #ccc;
     margin: 20px 0;
@@ -90,19 +90,23 @@ main {
 }
 
 .target-square-1 {
-    left: 30%;
+    left: 15%;
 }
 
 .target-square-2 {
-    left: 60%;
+    left: 35%;
 }
 
 .target-square-3 {
-    left: 90%;
+    left: 55%;
 }
 
-.moving-square {
-    left: 0;
+.target-square-4 {
+    left: 75%;
+}
+
+.target-square-5 {
+    left: 95%;
 }
 
 .target-square.hit {
