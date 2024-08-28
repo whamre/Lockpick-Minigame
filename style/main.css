@@ -80,7 +80,7 @@ main {
     position: absolute;
     width: 30px;
     height: 30px;
-    background-color: rgb(255, 87, 87);
+    background-color: #1591ea;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -90,22 +90,18 @@ main {
 }
 
 .target-square-1 {
-    left: 15%;
-}
-
-.target-square-2 {
     left: 35%;
 }
 
-.target-square-3 {
+.target-square-2 {
     left: 55%;
 }
 
-.target-square-4 {
+.target-square-3 {
     left: 75%;
 }
 
-.target-square-5 {
+.target-square-4 {
     left: 95%;
 }
 

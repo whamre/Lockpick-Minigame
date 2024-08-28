@@ -16,12 +16,18 @@ let successfulHits = 0;
 let targetKeys = [];
 
 lockpickButton.addEventListener("click", function() {
-    showLoadingScreen();
+    showLoadingScreen(); // Start the game when the lockpick-button is clicked
 });
 
 restartButton.addEventListener("click", function() {
     resetGame();
 });
+
+// Function to generate random letters
+function generateRandomLetter() {
+    const letters = "abcdefghijklmnopqrstuvwxyz";
+    return letters[Math.floor(Math.random() * letters.length)];
+}
 
 function showLoadingScreen() {
     lockpickButton.style.display = "none";
@@ -48,10 +54,12 @@ function startGame() {
     resultMessage.style.display = "none"; 
     forklaring.style.display = "block"; 
     
-    targetKeys = Array.from({length: 5}, () => Math.floor(Math.random() * 10));
+    // Generate random letters for each target square (5 squares)
+    targetKeys = Array.from({length: 5}, generateRandomLetter);
     
+    // Update the target squares with the corresponding letters
     targetSquares.forEach((square, index) => {
-        square.textContent = targetKeys[index];
+        square.textContent = targetKeys[index].toUpperCase(); // Display as uppercase
     });
 
     targetPositions = Array.from(targetSquares).map(square => square.offsetLeft);
@@ -68,18 +76,18 @@ function moveSquare() {
     movingPosition += 2;
     movingSquare.style.left = movingPosition + "px";
     
-    if (movingPosition >= 390) { 
+    if (movingPosition >= 385) { 
         clearInterval(moveInterval);
         checkForLoss();
     }
 }
 
 document.addEventListener("keydown", function(event) {
-    handleKeyPress(event.key);
+    handleKeyPress(event.key.toLowerCase());
 });
 
 function handleKeyPress(key) {
-    if (key === targetKeys[currentTargetIndex].toString()) {
+    if (key === targetKeys[currentTargetIndex]) {
         clearInterval(moveInterval);
         checkWinCondition();
     } else {
@@ -101,7 +109,7 @@ function checkWinCondition() {
         targetSquares[currentTargetIndex].classList.add('hit');
         currentTargetIndex++;
 
-        if (successfulHits === 5) {
+        if (successfulHits === 4) {
             displayMessage("Du Vant!", "green");
             forklaring.style.display = "none";  
             restartButton.style.display = "block";
@@ -116,7 +124,7 @@ function checkWinCondition() {
 }
 
 function checkForLoss() {
-    if (successfulHits < 5) {
+    if (successfulHits < 4) {
         displayMessage("Du Tapte!", "red");
         forklaring.style.display = "none";  
         restartButton.style.display = "block";
