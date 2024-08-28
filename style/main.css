@@ -1,0 +1,135 @@
+body {
+    background-color: rgb(255, 255, 255);
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container {
+    height: 50vh;
+    width: 50vh;
+    border: 2px solid #13aa52;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lockpick-button {
+    background-color: #13aa52;
+    border: 1px solid #13aa52;
+    border-radius: 4px;
+    height: 10%;
+    width: 30%;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+    box-sizing: border-box;
+    transform: translateY(0);
+    transition: transform 150ms, box-shadow 150ms;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+    line-height: normal;
+}
+
+.lockpick-button svg {
+    flex-shrink: 0;
+    margin-left: 5px;
+}
+
+
+.lockpick-button:hover {
+    box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+    transform: translateY(-2px);
+}
+
+
+.game-interface {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+.progress-bar {
+    position: relative;
+    width: 300px;
+    height: 30px;
+    background-color: #ccc;
+    margin: 20px 0;
+}
+
+.moving-square, .target-square {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: green;
+}
+
+.target-square {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.target-square-1 {
+    left: 30%;
+}
+
+.target-square-2 {
+    left: 60%;
+}
+
+.target-square-3 {
+    left: 90%;
+}
+
+.moving-square {
+    left: 0;
+}
+
+.target-square.hit {
+    background-color: green;
+}
+
+
+.result-message {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+.restart-button {
+    background-color: #13aa52;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-left: 32%;
+}
+
+.restart-button:hover {
+    background-color: #0f8c44;
+}
