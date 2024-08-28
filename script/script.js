@@ -63,6 +63,11 @@ function handleKeyPress(key) {
     if (key === targetKeys[currentTargetIndex].toString()) {
         clearInterval(moveInterval);
         checkWinCondition();
+    } else {
+        clearInterval(moveInterval);
+        displayMessage("Du Tapte!", "red");
+        forklaring.style.display = "none";  
+        restartButton.style.display = "block";
     }
 }
 
@@ -74,7 +79,7 @@ function checkWinCondition() {
     
     if (difference < 30) {
         successfulHits++;
-        targetSquares[currentTargetIndex].classList.add('hit');
+        targetSquares[currentTargetIndex].classList.add('hit'); 
         currentTargetIndex++;
 
         if (successfulHits === 3) {
