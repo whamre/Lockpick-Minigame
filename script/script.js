@@ -5,6 +5,8 @@ const targetSquares = document.querySelectorAll(".target-square");
 const restartButton = document.querySelector(".restart-button");
 const resultMessage = document.querySelector(".result-message");
 const forklaring = document.querySelector(".forklaring");
+const loadingScreen = document.querySelector(".loading-screen");
+const countdownElement = document.querySelector(".countdown");
 
 let moveInterval;
 let movingPosition = 0;
@@ -14,15 +16,33 @@ let successfulHits = 0;
 let targetKeys = [];
 
 lockpickButton.addEventListener("click", function() {
-    startGame();
+    showLoadingScreen();
 });
 
 restartButton.addEventListener("click", function() {
     resetGame();
 });
 
-function startGame() {
+function showLoadingScreen() {
     lockpickButton.style.display = "none";
+    loadingScreen.style.display = "block";
+    
+    let countdown = 3;
+    countdownElement.textContent = countdown;
+
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            countdownElement.textContent = countdown;
+        } else {
+            clearInterval(countdownInterval);
+            loadingScreen.style.display = "none";
+            startGame();
+        }
+    }, 1000);
+}
+
+function startGame() {
     gameInterface.style.display = "block";
     restartButton.style.display = "none"; 
     resultMessage.style.display = "none"; 
@@ -79,7 +99,7 @@ function checkWinCondition() {
     
     if (difference < 30) {
         successfulHits++;
-        targetSquares[currentTargetIndex].classList.add('hit'); 
+        targetSquares[currentTargetIndex].classList.add('hit');
         currentTargetIndex++;
 
         if (successfulHits === 3) {
