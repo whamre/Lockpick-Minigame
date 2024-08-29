@@ -1,156 +1,108 @@
-const lockpickButton = document.querySelector(".lockpick-button");
-const gameInterface = document.querySelector(".game-interface");
-const movingSquare = document.querySelector(".moving-square");
-const targetSquares = document.querySelectorAll(".target-square");
-const restartButton = document.querySelector(".restart-button");
-const resultMessage = document.querySelector(".result-message");
-const forklaring = document.querySelector(".forklaring");
-const loadingScreen = document.querySelector(".loading-screen");
-const countdownElement = document.querySelector(".countdown");
+document.addEventListener("DOMContentLoaded", function() {
+    const progressBar = document.querySelector(".progress-fill");
+    const targetSquares = document.querySelectorAll(".target-square");
+    const countdownElement = document.querySelector(".countdown");
+    const loadingScreen = document.querySelector(".loading-screen");
+    const gameInterface = document.querySelector(".game-interface");
+    const resultMessage = document.querySelector(".result-message");
+    const restartButton = document.querySelector(".restart-button");
+    const lockpickButton = document.querySelector(".lockpick-button");
+    const bar = document.querySelector(".progress-bar");
 
-let moveInterval;
-let movingPosition = 0;
-let targetPositions = [];
-let currentTargetIndex = 0;
-let successfulHits = 0;
-let targetKeys = [];
+    let progress = 0;
+    let interval;
+    let currentTargetIndex = 0;
 
-lockpickButton.addEventListener("click", function() {
-    showLoadingScreen(); // Start the game when the lockpick-button is clicked
-});
+    lockpickButton.addEventListener("click", startGame);
 
-restartButton.addEventListener("click", function() {
-    resetGame();
-});
 
-// Function to generate random letters
-function generateRandomLetter() {
-    const letters = "abcdefghijklmnopqrstuvwxyz";
-    return letters[Math.floor(Math.random() * letters.length)];
-}
+    function startGame() {
+        lockpickButton.style.display = "none";
+        loadingScreen.style.display = "block";
+        let countdown = 3;
 
-function showLoadingScreen() {
-    lockpickButton.style.display = "none";
-    loadingScreen.style.display = "block"; 
-    
-    let countdown = 3;
-    countdownElement.textContent = countdown;
-
-    const countdownInterval = setInterval(() => {
-        countdown--;
-        if (countdown > 0) {
+        const countdownInterval = setInterval(() => {
             countdownElement.textContent = countdown;
-        } else {
-            clearInterval(countdownInterval);
-            loadingScreen.style.display = "none"; 
-            startGame(); 
-        }
-    }, 1000);
-}
+            countdown--;
 
-function startGame() {
-    gameInterface.style.display = "block";
-    restartButton.style.display = "none"; 
-    resultMessage.style.display = "none"; 
-    forklaring.style.display = "block"; 
-    
-    // Generate random letters for each target square (5 squares)
-    targetKeys = Array.from({length: 5}, generateRandomLetter);
-    
-    // Update the target squares with the corresponding letters
-    targetSquares.forEach((square, index) => {
-        square.textContent = targetKeys[index].toUpperCase(); // Display as uppercase
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                bar.style.display = "block";
+                loadingScreen.style.display = "none";
+                gameInterface.style.display = "block";
+                startProgressBar();
+            }
+        }, 1000);
+    }
+
+    function startProgressBar() {
+        interval = setInterval(() => {
+            progress += 1;
+            progressBar.style.width = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                console.log("Progress bar reached the end without hitting all targets.");
+                endGame(false);
+            }
+        }, 50);
+    }
+
+
+    function endGame(isWin) {
+        clearInterval(interval);
+        gameInterface.style.display = "block";
+        resultMessage.style.display = "block";
+        restartButton.style.display = "block";
+
+        if (isWin) {
+            resultMessage.textContent = "Gratulerer, du klarte det!";
+            console.log("Du vant!");
+        } else {
+            resultMessage.textContent = "Du tapte, prøv igjen!";
+            console.log("Du tapte.");
+        }
+
+        document.removeEventListener("keydown", handleKeyPress);
+    }
+
+    function resetGameVisuals() {
+        progress = 0;
+        currentTargetIndex = 0;
+        progressBar.style.width = "0%";
+        targetSquares.forEach(square => square.style.backgroundColor = "#0000006c");
+        resultMessage.style.display = "none";
+        restartButton.style.display = "none";
+        bar.style.display = "none";
+        lockpickButton.style.display = "block";
+    }
+
+    restartButton.addEventListener("click", function() {
+        resetGameVisuals();
+        document.addEventListener("keydown", handleKeyPress); 
     });
 
-    targetPositions = Array.from(targetSquares).map(square => square.offsetLeft);
+    function handleKeyPress(event) {
+        if (event.key === "e" || event.key === "E") {
+            const currentTarget = targetSquares[currentTargetIndex];
+            const currentTargetPosition = (currentTarget.offsetLeft + (currentTarget.offsetWidth / 2)) / progressBar.parentElement.offsetWidth * 100;
 
-    movingPosition = 0;
-    currentTargetIndex = 0;
-    successfulHits = 0;
-    movingSquare.style.left = movingPosition + "px";
+            if (Math.abs(progress - currentTargetPosition) < 5) {
+                currentTarget.style.backgroundColor = "green";
+                currentTargetIndex++;
 
-    moveInterval = setInterval(moveSquare, 10);
-}
-
-function moveSquare() {
-    movingPosition += 2;
-    movingSquare.style.left = movingPosition + "px";
-    
-    if (movingPosition >= 385) { 
-        clearInterval(moveInterval);
-        checkForLoss();
+                if (currentTargetIndex >= targetSquares.length) {
+                    endGame(true);
+                }
+            } else {
+                console.log("Mistimed keypress. You lose.");
+                endGame(false);
+            }
+        } else {
+            console.log("Wrong key pressed. You lose.");
+            endGame(false);
+        }
     }
-}
 
-document.addEventListener("keydown", function(event) {
-    handleKeyPress(event.key.toLowerCase());
+    document.addEventListener("keydown", handleKeyPress);
 });
-
-function handleKeyPress(key) {
-    if (key === targetKeys[currentTargetIndex]) {
-        clearInterval(moveInterval);
-        checkWinCondition();
-    } else {
-        clearInterval(moveInterval);
-        displayMessage("Du Tapte!", "red");
-        forklaring.style.display = "none";  
-        restartButton.style.display = "block";
-    }
-}
-
-function checkWinCondition() {
-    const squareCenter = movingPosition + (movingSquare.offsetWidth / 2);
-    const targetCenter = targetPositions[currentTargetIndex] + (targetSquares[currentTargetIndex].offsetWidth / 2);
-    
-    const difference = Math.abs(squareCenter - targetCenter);
-    
-    if (difference < 30) {
-        successfulHits++;
-        targetSquares[currentTargetIndex].classList.add('hit');
-        currentTargetIndex++;
-
-        if (successfulHits === 4) {
-            displayMessage("Du Vant!", "green");
-            forklaring.style.display = "none";  
-            restartButton.style.display = "block";
-        } else {
-            moveInterval = setInterval(moveSquare, 10);
-        }
-    } else {
-        displayMessage("Du Tapte!", "red");
-        forklaring.style.display = "none";  
-        restartButton.style.display = "block";
-    }
-}
-
-function checkForLoss() {
-    if (successfulHits < 4) {
-        displayMessage("Du Tapte!", "red");
-        forklaring.style.display = "none";  
-        restartButton.style.display = "block";
-    }
-}
-
-function displayMessage(message, color) {
-    resultMessage.textContent = message;
-    resultMessage.style.color = color;
-    resultMessage.style.display = "block";
-}
-
-function resetGame() {
-    gameInterface.style.display = "none";
-    lockpickButton.style.display = "block";
-    
-    movingPosition = 0;
-    currentTargetIndex = 0;
-    successfulHits = 0;
-    movingSquare.style.left = movingPosition + "px";
-    
-    resultMessage.style.display = "none";
-    forklaring.style.display = "block"; 
-    
-    targetSquares.forEach(square => {
-        square.classList.remove('hit');
-        square.textContent = "";
-    });
-}
