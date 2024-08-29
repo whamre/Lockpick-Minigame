@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const progressBar = document.querySelector(".progress-fill");
-    const targetSquares = document.querySelectorAll(".target-square");
+    let targetSquares;
     const countdownElement = document.querySelector(".countdown");
     const loadingScreen = document.querySelector(".loading-screen");
     const gameInterface = document.querySelector(".game-interface");
@@ -9,16 +9,30 @@ document.addEventListener("DOMContentLoaded", function() {
     const lockpickButton = document.querySelector(".lockpick-button");
     const bar = document.querySelector(".progress-bar");
 
+    const targetSquaresInput = document.getElementById('targetSquares');
+    const progressSpeedInput = document.getElementById('progressSpeed');
+    const applySettingsButton = document.getElementById('applySettings');
+
     let progress = 0;
     let interval;
     let currentTargetIndex = 0;
+    let numberOfTargetSquares = parseInt(targetSquaresInput.value);
+    let progressSpeed = parseFloat(progressSpeedInput.value);
+
+    applySettingsButton.addEventListener('click', () => {
+        numberOfTargetSquares = parseInt(targetSquaresInput.value);
+        progressSpeed = parseFloat(progressSpeedInput.value);
+        console.log(`Number of Target Squares: ${numberOfTargetSquares}, Progress Speed: ${progressSpeed}`);
+    });
 
     lockpickButton.addEventListener("click", startGame);
-
 
     function startGame() {
         lockpickButton.style.display = "none";
         loadingScreen.style.display = "block";
+
+        createTargetSquares(numberOfTargetSquares);
+
         let countdown = 3;
 
         const countdownInterval = setInterval(() => {
@@ -35,9 +49,32 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 1000);
     }
 
+    function createTargetSquares(numberOfSquares) {
+        targetSquares = [];
+        
+        let previousLeftPosition = 10;
+        const minimumGap = 10;
+
+        for (let i = 1; i <= numberOfSquares; i++) {
+            const targetSquare = document.createElement('div');
+            targetSquare.classList.add('target-square');
+            targetSquare.classList.add(`target-square-${i}`);
+
+            const maxLeftPosition = 91 - (numberOfSquares - i) * minimumGap;
+            const leftPosition = Math.floor(Math.random() * (maxLeftPosition - previousLeftPosition)) + previousLeftPosition;
+            
+            targetSquare.style.left = `${leftPosition}%`;
+
+            previousLeftPosition = leftPosition + minimumGap;
+
+            bar.appendChild(targetSquare);
+            targetSquares.push(targetSquare);
+        }
+    }
+
     function startProgressBar() {
         interval = setInterval(() => {
-            progress += 1;
+            progress += progressSpeed;
             progressBar.style.width = `${progress}%`;
 
             if (progress >= 100) {
@@ -47,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }, 50);
     }
-
 
     function endGame(isWin) {
         clearInterval(interval);
@@ -70,7 +106,11 @@ document.addEventListener("DOMContentLoaded", function() {
         progress = 0;
         currentTargetIndex = 0;
         progressBar.style.width = "0%";
-        targetSquares.forEach(square => square.style.backgroundColor = "#0000006c");
+        
+        targetSquares.forEach(square => square.remove());
+        
+        targetSquares = [];
+    
         resultMessage.style.display = "none";
         restartButton.style.display = "none";
         bar.style.display = "none";

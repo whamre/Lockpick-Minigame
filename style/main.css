@@ -8,6 +8,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     height: 100vh;
 }
 
@@ -85,7 +86,7 @@ main {
 
 .progress-bar {
     position: relative;
-    width: 300px;
+    width: 350px;
     height: 30px;
     background-color: #c0c0c0;
     border-radius: 5px;
@@ -113,18 +114,6 @@ main {
     border-radius: 5px;
 }
 
-.target-square-1 {
-    left: 35%;
-}
-
-.target-square-2 {
-    left: 55%;
-}
-
-.target-square-3 {
-    left: 75%;
-}
-
 .target-square.hit {
     background-color: green;
 }
@@ -150,4 +139,16 @@ main {
 
 .restart-button:hover {
     background-color: #0f8c44;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls label {
+    margin-right: 10px;
+}
+
+.controls input {
+    margin-right: 20px;
 }
