@@ -24,36 +24,42 @@ document.addEventListener("DOMContentLoaded", function() {
         progressSpeed = parseFloat(progressSpeedInput.value);
         console.log(`Number of Target Squares: ${numberOfTargetSquares}, Progress Speed: ${progressSpeed}`);
     });
+    
+    document.removeEventListener("keydown", handleKeyPress);
 
     lockpickButton.addEventListener("click", startGame);
 
     function startGame() {
         lockpickButton.style.display = "none";
         loadingScreen.style.display = "block";
-
+    
         createTargetSquares(numberOfTargetSquares);
-
+    
         let countdown = 3;
-
+        
         const countdownInterval = setInterval(() => {
             countdownElement.textContent = countdown;
             countdown--;
-
+    
             if (countdown < 0) {
                 clearInterval(countdownInterval);
                 bar.style.display = "block";
                 loadingScreen.style.display = "none";
                 gameInterface.style.display = "block";
                 startProgressBar();
+    
+                document.addEventListener("keydown", handleKeyPress);
             }
         }, 1000);
     }
+    
+    
 
     function createTargetSquares(numberOfSquares) {
         targetSquares = [];
         
         let previousLeftPosition = 10;
-        const minimumGap = 10;
+        const minimumGap = 15;
 
         for (let i = 1; i <= numberOfSquares; i++) {
             const targetSquare = document.createElement('div');
@@ -74,9 +80,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function startProgressBar() {
         interval = setInterval(() => {
-            progress += progressSpeed;
+            let currentTarget = targetSquares[currentTargetIndex];
+            let currentTargetPosition = (currentTarget.offsetLeft + (currentTarget.offsetWidth / 2)) / progressBar.parentElement.offsetWidth * 100;
+    
+            let targetStart = (currentTarget.offsetLeft / progressBar.parentElement.offsetWidth) * 100;
+            let targetEnd = targetStart + (currentTarget.offsetWidth / progressBar.parentElement.offsetWidth) * 100;
+    
+            if (progress >= targetStart && progress <= targetEnd) {
+                progress += progressSpeed * 0.25;
+            } else {
+                progress += progressSpeed;
+            }
+    
             progressBar.style.width = `${progress}%`;
-
+    
             if (progress >= 100) {
                 clearInterval(interval);
                 console.log("Progress bar reached the end without hitting all targets.");
@@ -84,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }, 50);
     }
+    
 
     function endGame(isWin) {
         clearInterval(interval);
@@ -110,27 +128,29 @@ document.addEventListener("DOMContentLoaded", function() {
         targetSquares.forEach(square => square.remove());
         
         targetSquares = [];
-    
+        
         resultMessage.style.display = "none";
         restartButton.style.display = "none";
         bar.style.display = "none";
         lockpickButton.style.display = "block";
+    
+        document.removeEventListener("keydown", handleKeyPress);
     }
+    
 
     restartButton.addEventListener("click", function() {
         resetGameVisuals();
-        document.addEventListener("keydown", handleKeyPress); 
     });
 
     function handleKeyPress(event) {
         if (event.key === "e" || event.key === "E") {
             const currentTarget = targetSquares[currentTargetIndex];
             const currentTargetPosition = (currentTarget.offsetLeft + (currentTarget.offsetWidth / 2)) / progressBar.parentElement.offsetWidth * 100;
-
+    
             if (Math.abs(progress - currentTargetPosition) < 5) {
                 currentTarget.style.backgroundColor = "green";
                 currentTargetIndex++;
-
+    
                 if (currentTargetIndex >= targetSquares.length) {
                     endGame(true);
                 }
@@ -143,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
             endGame(false);
         }
     }
+    
 
     document.addEventListener("keydown", handleKeyPress);
 });
