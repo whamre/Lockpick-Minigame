@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
             let targetEnd = targetStart + (currentTarget.offsetWidth / progressBar.parentElement.offsetWidth) * 100;
     
             if (progress >= targetStart && progress <= targetEnd) {
-                progress += progressSpeed * 0.25;
+                progress += progressSpeed * 0.20;
             } else {
                 progress += progressSpeed;
             }
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const currentTarget = targetSquares[currentTargetIndex];
             const currentTargetPosition = (currentTarget.offsetLeft + (currentTarget.offsetWidth / 2)) / progressBar.parentElement.offsetWidth * 100;
     
-            if (Math.abs(progress - currentTargetPosition) < 5) {
+            if (Math.abs(progress - currentTargetPosition) < 4) {
                 currentTarget.style.backgroundColor = "green";
                 currentTargetIndex++;
     
